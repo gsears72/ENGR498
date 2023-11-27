@@ -7,6 +7,7 @@
 // SPI pins for the third Honeywell pressure sensor
 #define SPI_CS_PIN 11
 
+
 void setup() {
   Serial.begin(9600);
 
@@ -44,18 +45,15 @@ float readPressureI2C(int sensorAddress) {
 
   delay(10); // Wait for the sensor to process the request
 
-  Wire.requestFrom(sensorAddress, 4);
-  while (Wire.available() < 4) {
-    // Wait for data to be available
-  }
+  Wire.requestFrom(sensorAddress, 7);
 
-  byte buffer[4];
-  for (int i = 0; i < 4; i++) {
+  byte buffer[7];
+  for (int i = 0; i < 7; i++) {
     buffer[i] = Wire.read();
   }
 
-  int rawPressure = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
-  float pressure = rawPressure / 1000.0; // Convert to psi (adjust as needed)
+  double press_counts = buffer[3] + buffer[2] * 256 + buffer[1] * 65536; // calculate digital pressure counts
+  double pressure = ((press_counts -  1677722) * (1 - 0)) / (15099494 -  1677722) + 0;
 
   return pressure;
 }
