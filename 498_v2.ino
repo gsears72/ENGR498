@@ -1,12 +1,18 @@
 #include <Wire.h>
 #include <SPI.h>
+#include<avr/dtostrf.h>
 
 // I2C addresses for the Honeywell pressure sensors
 #define I2C_ADDRESS_1 0x28
 
 // SPI pins for the third Honeywell pressure sensor
-#define SPI_CS_PIN 11
+#define SPI_CS_PIN 19
 
+uint8_t cmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
+double outputmax = 15099494; // output at maximum pressure [counts]
+double outputmin = 1677722; // output at minimum pressure [counts]
+double pmax = 1; // maximum value of pressure range [bar, psi, kPa, etc.]
+double pmin = 0; // minimum value of pressure range [bar, psi, kPa, etc.]
 
 void setup() {
   Serial.begin(9600);
@@ -31,7 +37,7 @@ void loop() {
 
   // Read data from the SPI pressure sensor
   float pressure3 = readPressureSPI();
-  Serial.print("Pressure 3: ");
+  Serial.print("Pressure 3: SPI ");
   Serial.print(pressure3);
   Serial.println(" psi");
 
@@ -40,44 +46,38 @@ void loop() {
 
 float readPressureI2C(int sensorAddress) {
   Wire.beginTransmission(sensorAddress);
-  Wire.write(0x00); // Command byte for pressure data
+  Wire.write (cmd, 3); // Command byte for pressure data
   Wire.endTransmission();
 
   delay(10); // Wait for the sensor to process the request
 
   Wire.requestFrom(sensorAddress, 7);
 
-  byte buffer[7];
+  byte I2C_buffer[7];
   for (int i = 0; i < 7; i++) {
-    buffer[i] = Wire.read();
+    I2C_buffer[i] = Wire.read();
   }
 
-  double press_counts = buffer[3] + buffer[2] * 256 + buffer[1] * 65536; // calculate digital pressure counts
-  double pressure = ((press_counts -  1677722) * (1 - 0)) / (15099494 -  1677722) + 0;
+  double I2C_press_counts = I2C_buffer[3] + I2C_buffer[2] * 256 + I2C_buffer[1] * 65536; // calculate digital pressure counts
+  double pressure = ((I2C_press_counts - outputmin) * (pmax - pmin)) / (outputmax - outputmin) + pmin;
 
   return pressure;
 }
 
 float readPressureSPI() {
-  digitalWrite(SPI_CS_PIN, LOW); // Select the SPI device
-
-  SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
-  byte buffer[4];
-
-  // Send dummy byte to read pressure data
-  SPI.transfer(0x00);
-
-  // Read 3 bytes of pressure data
-  for (int i = 0; i < 3; i++) {
-    buffer[i] = SPI.transfer(0x00);
-  }
-
+  uint8_t SPIdata[7] = {0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
+  SPI.beginTransaction(SPISettings(200000, MSBFIRST, SPI_MODE0)); //SPI at 200kHz
+  digitalWrite(SPI_CS_PIN, LOW); // set SS Low
+  SPI.transfer(cmd, 3); // send Read Command
+  digitalWrite(SPI_CS_PIN, HIGH); // set SS High
+  delay(10); // wait for conversion
+  digitalWrite(SPI_CS_PIN, LOW);
+  SPI.transfer(SPIdata, 7);
+  digitalWrite(SPI_CS_PIN, HIGH); 
   SPI.endTransaction();
-
-  digitalWrite(SPI_CS_PIN, HIGH); // Deselect the SPI device
-
-  int rawPressure = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
-  float pressure = rawPressure / 1000.0; // Convert to psi (adjust as needed)
-
+  double SPI_press_counts = SPIdata[3] + SPIdata[2] * 256 + SPIdata[1] * 65536; // calculate digital pressure counts
+  //calculation of pressure value according to equation 2 of datasheet
+  double pressure = ((SPI_press_counts - outputmin) * (pmax - pmin)) / (outputmax - outputmin) + pmin;
+  
   return pressure;
 }
