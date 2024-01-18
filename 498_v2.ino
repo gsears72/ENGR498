@@ -65,7 +65,7 @@ float readPressureI2C(int sensorAddress) {
 }
 
 float readPressureSPI() {
-  uint8_t SPIdata[7] = {0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
+  uint8_t SPIdata[7] = {0xFA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
   SPI.beginTransaction(SPISettings(200000, MSBFIRST, SPI_MODE0)); //SPI at 200kHz
   digitalWrite(SPI_CS_PIN, LOW); // set SS Low
   SPI.transfer(cmd, 3); // send Read Command
