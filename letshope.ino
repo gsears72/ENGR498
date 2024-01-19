@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <avr/dtostrf.h>
 
 #define SDA_PIN_1 26   // Software I2C SDA pin for device 1
 #define SCL_PIN_1 27   // Software I2C SCL pin for device 1
@@ -16,9 +17,10 @@ double pressure = 0;
 double temperature = 0;
 double outputmax = 15099494;
 double outputmin = 1677722;
-double pmax = 1;
-double pmin = 0;
+double pmax = 498.17781666666;
+double pmin = -498.17781666666;
 double percentage = 0;
+char printBuffer[200], cBuff[20], percBuff[20], pBuff[20], tBuff[20];
 
 void i2cStart(int sdaPin, int sclPin) {
   pinMode(sdaPin, OUTPUT);
@@ -67,7 +69,7 @@ void i2cReadByte(int sdaPin, int sclPin, bool ack) {
     delayMicroseconds(2);
     digitalWrite(sclPin, HIGH);
     delayMicroseconds(2);
-    data |= digitalRead(sdaPin) << i;
+    data[i] = digitalRead(sdaPin);
     digitalWrite(sclPin, LOW);
     delayMicroseconds(2);
   }
@@ -128,7 +130,7 @@ void SPI_transferMultibyte(byte* sendData, byte* receivedData, int length) {
   digitalWrite(ssPin, LOW); // Select the device
 
   for (int i = 0; i < length; ++i) {
-    receivedData[i] = transfer(sendData[i]);
+    receivedData[i] = SPI_transfer(sendData[i]);
   }
 
   digitalWrite(ssPin, HIGH); // Deselect the device
@@ -183,7 +185,7 @@ void loop() {
   i2cStart(SDA_PIN_1, SCL_PIN_1);
   i2cWriteByte(SDA_PIN_1, SCL_PIN_1, 0x28 << 1);  // Replace with the actual shared address of device 1
   // ... Perform I2C operations for device 1 ...
-  i2cReadByte(SDA_PIN_1, SCL_PIN_1, true)
+  i2cReadByte(SDA_PIN_1, SCL_PIN_1, true);
   i2cStop(SDA_PIN_1, SCL_PIN_1);
   delay(100);
 
@@ -191,7 +193,7 @@ void loop() {
   i2cStart(SDA_PIN_2, SCL_PIN_2);
   i2cWriteByte(SDA_PIN_2, SCL_PIN_2, 0x28 << 1);  // Replace with the actual shared address of device 2
   // ... Perform I2C operations for device 2 ...
-  I2C_SENSOR_2 =i2cReadByte(SDA_PIN_2, SCL_PIN_2, true)
+  i2cReadByte(SDA_PIN_2, SCL_PIN_2, true);
   i2cStop(SDA_PIN_2, SCL_PIN_2);
   delay(1000);
 }
