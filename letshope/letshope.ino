@@ -11,10 +11,12 @@ const int mosiPin = 29;
 const int misoPin = 28;
 const int ssPin = 19;
 
+// Variables for the functions to manipulate
 double press_counts = 0;
 double temp_counts = 0;
 double pressure = 0;
 double temperature = 0;
+
 double outputmax = 15099494;
 double outputmin = 1677722;
 double pmax = 498.17781666666;
@@ -195,5 +197,8 @@ void loop() {
   // ... Perform I2C operations for device 2 ...
   i2cReadByte(SDA_PIN_2, SCL_PIN_2, true);
   i2cStop(SDA_PIN_2, SCL_PIN_2);
+
+  // Communicate with device 3
+  SPI_readSensorData();
   delay(1000);
 }
