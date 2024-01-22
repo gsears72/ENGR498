@@ -11,8 +11,8 @@ double pressure = 0; // pressure reading [bar, psi, kPa, etc.]
 double temperature = 0; // temperature reading in deg C
 double outputmax = 15099494; // output at maximum pressure [counts]
 double outputmin = 1677722; // output at minimum pressure [counts]
-double pmax = 1; // maximum value of pressure range [bar, psi, kPa, etc.]
-double pmin = 0; // minimum value of pressure range [bar, psi, kPa, etc.]
+double pmax = 499; // maximum value of pressure range [bar, psi, kPa, etc.]
+double pmin = -499; // minimum value of pressure range [bar, psi, kPa, etc.]
 double percentage = 0; // holds percentage of full scale data
 char printBuffer[200], cBuff[20], percBuff[20], pBuff[20], tBuff[20];
 

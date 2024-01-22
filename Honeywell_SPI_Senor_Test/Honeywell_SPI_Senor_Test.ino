@@ -8,8 +8,8 @@ double pressure = 0; // pressure reading [bar, psi, kPa, etc.]
 double temperature = 0; // temperature reading in deg C
 double outputmax = 15099494; // output at maximum pressure [counts]
 double outputmin = 1677722; // output at minimum pressure [counts]
-double pmax = 1; // maximum value of pressure range [bar, psi, kPa, etc.]
-double pmin = 0; // minimum value of pressure range [bar, psi, kPa, etc.]
+double pmax = 1245.4445416666501; // maximum value of pressure range [bar, psi, kPa, etc.]
+double pmin = -1245.4445416666501; // minimum value of pressure range [bar, psi, kPa, etc.]
 double percentage = 0; // holds percentage of full scale data
 char printBuffer[200], cBuff[20], percBuff[20], pBuff[20], tBuff[20];
 void setup() {
@@ -21,22 +21,22 @@ sprintf(printBuffer, "\nStatus Register, 24-bit Sensor data, Digital Pressure Co
 Percentage of full scale pressure,Pressure Output, Temperature\n");
 Serial.println(printBuffer);
 SPI.begin();
-pinMode(19, OUTPUT); // pin 10 as SS
-digitalWrite(19, HIGH); // set SS High
+//pinMode(19, OUTPUT); // pin 10 as SS
+//digitalWrite(19, HIGH); // set SS High
 }
 void loop() {
 delay(1);
 while (1) {
  uint8_t data[7] = {0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
  uint8_t cmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
- SPI.beginTransaction(SPISettings(200000, MSBFIRST, SPI_MODE0)); //SPI at 200kHz
- digitalWrite(19, LOW); // set SS Low
+ SPI.beginTransaction(SPISettings(800000, MSBFIRST, SPI_MODE0)); //SPI at 200kHz
+ //digitalWrite(19, LOW); // set SS Low
  SPI.transfer(cmd, 3); // send Read Command
- digitalWrite(19, HIGH); // set SS High
+ //digitalWrite(19, HIGH); // set SS High
  delay(100); // wait for conversion
- digitalWrite(19, LOW);
+ //digitalWrite(19, LOW);
  SPI.transfer(data, 7);
- digitalWrite(19, HIGH);
+ //digitalWrite(19, HIGH);
  SPI.endTransaction();
  press_counts = data[3] + data[2] * 256 + data[1] * 65536; // calculate digital pressure counts
  temp_counts = data[6] + data[5] * 256 + data[4] * 65536; // calculate digital temperature counts
