@@ -1,5 +1,5 @@
 Reading_Count,Pitch,Yaw,Pitotstatic
 Running communications test with 1000 iterations each averaged.
-Average I2C communication time: 6346.467773 us
-Average SPI communication time: 5140.755859 us
-Average calculation time: 6161.576172 us
+Average I2C communication time: 6345.687988 us
+Average SPI communication time: 5140.808105 us
+Average calculation time: 1020.968018 us

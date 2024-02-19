@@ -145,6 +145,8 @@ void speedtest() {
   sprintf(printBuffer, "Average SPI communication time: %f us", averageTime);
   Serial.println(printBuffer);
 
+  totalTime = 0;
+
   for (int i = 1; i < 1000; i++) {
     int y1 = rand() % 1001 - 500;
     int y2 = rand() % 1001 - 500;
