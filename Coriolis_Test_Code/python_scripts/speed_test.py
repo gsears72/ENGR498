@@ -1,7 +1,7 @@
 import serial
 
 # Adjust the port and baud rate based on your Arduino setup
-ser = serial.Serial('COM13', 115200, timeout=10)
+ser = serial.Serial('COM19', 115200, timeout=10)
 
 # Reset the arduino count if program is running.
 ser.write(b'\xFF')

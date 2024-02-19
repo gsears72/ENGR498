@@ -1,0 +1,4 @@
+Machine Readings for slow speed gather:
+Rating: 20%
+Speed: 20.0 mph
+Reference Pressure: -45.10 +- 0.25 Pa

@@ -75,6 +75,7 @@ void loop() {
         }
         else if (incomingByte == READ_SERIAL) {
           serialRead = 1;
+          loopcount = 0;
         }
         else if (incomingByte == STOP_SIGNAL) {
           serialRead = 0;
