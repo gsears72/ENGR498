@@ -1,23 +1,11 @@
 #include "coriolis.h"
-
-double press_counts = 0; // digital pressure reading [counts]
-double temp_counts = 0; // digital temperature reading [counts]
-
-double pressure = 0; // pressure reading [bar, psi, kPa, etc.]
-double temperature = 0; // temperature reading in deg C
-
-double percentage = 0; // holds percentage of full scale data
-
-char printBuffer[200], cBuff[20], percBuff[20], pBuff[20], tBuff[20];
-char fileBuffer[300];
-
-SPISettings mySPISettings(800000, MSBFIRST, SPI_MODE0);
+#include "vectormath.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// GENERAL DATA COLLECTION AND PRINTING FUNCTIONS //////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void readwire(uint8_t sensor, bool printres, bool debug) {
+void readwire(uint8_t sensor, bool printres, bool debug, int sensorNum) {
 
   // Set the I2C mux to the correct bus
   Wire.beginTransmission(0x70);
@@ -28,6 +16,8 @@ void readwire(uint8_t sensor, bool printres, bool debug) {
   uint8_t id = 0x28; // i2c address
   uint8_t data[7]; // holds output data
   uint8_t cmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
+
+  double press_counts = 0; // digital pressure reading [counts]
 
   Wire.beginTransmission(id);
   int stat = Wire.write (cmd, 3); // write command to the sensor
@@ -42,9 +32,10 @@ void readwire(uint8_t sensor, bool printres, bool debug) {
   }
 
   if (printres) printdata(data, debug);
+  else dataformate(data,debug,sensorNum);
 }
 
-void readspi(bool printres, bool debug) {
+void readspi(bool printres, bool debug, int sensorNum) {
   uint8_t data[7] = {0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
   uint8_t cmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
 
@@ -64,6 +55,7 @@ void readspi(bool printres, bool debug) {
   SPI.endTransaction();
 
   if (printres) printdata(data, debug);
+  else dataformate(data,debug,sensorNum);
 
 }
 
@@ -90,74 +82,91 @@ void printdata(uint8_t* data, bool debug) {
 }
 
 
+Cvector output;
+
+void dataformate(uint8_t* data, bool debug,int sensorNum) {
+  press_counts = data[3] + data[2] * 256 + data[1] * 65536; // calculate digital pressure counts
+  temp_counts = data[6] + data[5] * 256 + data[4] * 65536; // calculate digital temperature counts
+  temperature = (temp_counts * 200 / 16777215) - 50; // calculate temperature in deg c
+  percentage = (press_counts / 16777215) * 100; // calculate pressure as percentage of full scale
+  //calculation of pressure value according to equation 2 of datasheet
+  pressure = ((press_counts - outputmin) * (pmax5H2O - pmin5H2O)) / (outputmax - outputmin) + pmin5H2O;
+  dtostrf(press_counts, 4, 1, cBuff);
+  dtostrf(percentage, 4, 3, percBuff);
+  dtostrf(pressure, 4, 3, pBuff);
+  dtostrf(temperature, 4, 3, tBuff);
+  
+  if (debug) {
+    sprintf(printBuffer, "%x\t%2x\t%2x\t%2x\t%s\t%s\t%s\t%s\n", data[0], data[1], data[2], data[3], cBuff, percBuff, pBuff, tBuff);
+  }
+  else {
+    sprintf(printBuffer, ",%s", pBuff);
+  }
+  
+  if (sensorNum == 0){
+    output.set_y1(pressure);
+  }
+  else if(sensorNum == 1){
+    output.set_y2(pressure);
+  }
+  else if(sensorNum == 2){
+    output.set_y3(pressure);
+  }
+  
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// COMMUNICATIONS TESTS FUNCTIONS ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void commstest() {
   for (int i = 0; i < 10; i++) {
-    delay(1);
     sprintf(printBuffer, "%d", i);
     Serial.print(printBuffer);
     readwire(sensor1, true, 1);
     readwire(sensor2, true, 1);
-    readspi(true, 1);
+    readspi(true, 1, 2);
     Serial.println();
+    delay(1);
   }
 }
 
 void speedtest() {
-  float averageTime = 0.0;
-  float totalTime = 0.0;
-  float startTime = 0.0;
-  float executionTime = 0.0;
+  unsigned long averageTime = 0;
+  unsigned long totalTime = 0;
+  unsigned long startTime = 0;
+  unsigned long executionTime = 0;
 
-  Serial.println("Running communications test with 1000 iterations each averaged.");
+  Serial.println("Running communications test with 100 iterations each averaged.");
 
   // Set the I2C mux to the second I2C bus
   Wire.beginTransmission(0x70);
   Wire.write(1 << sensor2);
   Wire.endTransmission();
 
-  for(int i = 1; i <= 1000; i++) {
-    startTime = micros();
+  for(int i = 1; i <= 100; i++) {
+    startTime = millis();
     readwire(sensor1,false);
-    executionTime = micros() - startTime;
+    executionTime = millis() - startTime;
     totalTime += executionTime;
   }
 
-  averageTime = totalTime / 1000.0;
+  averageTime = totalTime / 100.0;
 
-  sprintf(printBuffer, "Average I2C communication time: %f us", averageTime);
+  sprintf(printBuffer, "Average I2C communication time: %lu ms", averageTime);
   Serial.println(printBuffer);
 
   totalTime = 0;
 
-  for(int i = 1; i <= 1000; i++) {
-    startTime = micros();
+  for(int i = 1; i <= 100; i++) {
+    startTime = millis();
     readspi(false);
-    executionTime = micros() - startTime;
+    executionTime = millis() - startTime;
     totalTime += executionTime;
   }
 
-  averageTime = totalTime / 1000.0;
-
-  sprintf(printBuffer, "Average SPI communication time: %f us", averageTime);
-  Serial.println(printBuffer);
-
-  for (int i = 1; i < 1000; i++) {
-    int y1 = rand() % 1001 - 500;
-    int y2 = rand() % 1001 - 500;
-    int y3 = rand() % 2491 - 1245;
-    startTime = micros();
-    calcvector(y1,y2,y3);
-    executionTime = micros() - startTime;
-    totalTime += executionTime;
-  }
-
-  averageTime = totalTime / 1000.0;
-
-  sprintf(printBuffer, "Average calculation time: %f us", averageTime);
+  sprintf(printBuffer, "Average SPI communication time: %lu ms", averageTime);
   Serial.println(printBuffer);
 
 }
