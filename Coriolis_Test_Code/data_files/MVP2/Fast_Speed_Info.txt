@@ -1,0 +1,4 @@
+Machine Readings for fast speed gather:
+Rating: 60%
+Speed: 32.5 m/s     73 mph
+Reference Pressure: -638 +- 3 Pa

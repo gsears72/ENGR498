@@ -1,3 +1,0 @@
-Percentage: 20%
-Speed: 20.7 +- 0.2mph
-Reference Pressure: -49 +- 0.25 Pa

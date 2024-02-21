@@ -1,7 +1,10 @@
 import serial
+import serial_config as cfg
 
 # Adjust the port and baud rate based on your Arduino setup
-ser = serial.Serial('COM19', 115200, timeout=1)
+ser = serial.Serial(cfg.PORT, cfg.BAUDRATE, timeout=1)
+
+ser.flushInput()
 
 # Reset the arduino count if program is running.
 ser.write(b'\xFF')
@@ -11,7 +14,7 @@ ser.write(b'\xFA')
 
 try:
     with open('../data_files/test.csv', 'w') as file:
-        file.write("Reading_Count,Pitch,Yaw,Pitotstatic\n")
+        file.write("Status Register, 24 - bit Sensor data, Digital Pressure Counts, Percentage of full scale pressure, Pressure Output, Temperature\n")
 
         while True:
             # Read a line from the serial port

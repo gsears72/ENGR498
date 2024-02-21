@@ -97,10 +97,13 @@ void printdata(uint8_t* data, bool debug) {
 void commstest() {
   for (int i = 0; i < 10; i++) {
     delay(1);
-    sprintf(printBuffer, "%d", i);
-    Serial.print(printBuffer);
+    //sprintf(printBuffer, "%d", i);
+    //Serial.print(printBuffer);
+    Serial.print("I2C 1:\t");
     readwire(sensor1, true, 1);
+    Serial.print("I2C 2:\t");
     readwire(sensor2, true, 1);
+    Serial.print("SPI:\t");
     readspi(true, 1);
     Serial.println();
   }

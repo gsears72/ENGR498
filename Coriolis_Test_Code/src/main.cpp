@@ -9,6 +9,7 @@
 #define SPEED_TEST_SIGNAL 0xF0
 #define READ_SERIAL 0xAA
 #define STOP_SIGNAL 0x00
+#define GET_DATA 0xF8
 
 // Uncomment to enable debug printing
 //#define DEBUG
@@ -44,45 +45,32 @@ uint8_t serialRead = 0;
 void loop() {
   while(!Serial){delay(1);}
   delay(5);
-  if (debug) {
-    while(1) {
-      //Serial.print("I2C1:\t");
-      //readwire(sensor1, true, true);
-      //Serial.print("I2C2:\t");
-      //readwire(sensor2, true, true);
-      Serial.print("SPI:\t");
-      readspi(true, true);
-      delay(100);
-    }
-  }
-  else {
-    while (1) {
-      if (Serial.available()) {
-        int incomingByte = Serial.read();
+  
+  while (1) {
+    if (Serial.available()) {
+      int incomingByte = Serial.read();
 
-        if (incomingByte == RESET_SIGNAL) {
-          loopcount = 0;
-          serialRead = 0;
-          return;
-        }
-        else if (incomingByte == COMMS_TEST_SIGNAL) {
-          commstest();
-          Serial.println("end of test");
-        }
-        else if (incomingByte == SPEED_TEST_SIGNAL) {
-          speedtest();
-          Serial.println("end of test");
-        }
-        else if (incomingByte == READ_SERIAL) {
-          serialRead = 1;
-          loopcount = 0;
-        }
-        else if (incomingByte == STOP_SIGNAL) {
-          serialRead = 0;
-        }
+      if (incomingByte == RESET_SIGNAL) {
+        loopcount = 0;
+        serialRead = 0;
+        return;
       }
-
-      if (serialRead) {
+      else if (incomingByte == COMMS_TEST_SIGNAL) {
+        commstest();
+        Serial.println("end of test");
+      }
+      else if (incomingByte == SPEED_TEST_SIGNAL) {
+        speedtest();
+        Serial.println("end of test");
+      }
+      else if (incomingByte == READ_SERIAL) {
+        serialRead = 1;
+        loopcount = 0;
+      }
+      else if (incomingByte == STOP_SIGNAL) {
+        serialRead = 0;
+      }
+      else if (incomingByte == GET_DATA) {
         delay(1);
         sprintf(printBuffer, "%.0f", loopcount);
         Serial.print(printBuffer);

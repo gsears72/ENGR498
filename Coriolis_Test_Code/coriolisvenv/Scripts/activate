@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\TrevorBailey.MSI\Documents\PlatformIO\Projects\MVP2\coriolisvenv"
+VIRTUAL_ENV="C:\Users\TrevorBailey.MSI\Documents\GitHub\ENGR498\Coriolis_Test_Code\coriolisvenv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

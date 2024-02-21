@@ -1,7 +1,10 @@
 import serial
+import serial_config as cfg
 
 # Adjust the port and baud rate based on your Arduino setup
-ser = serial.Serial('COM19', 115200, timeout=10)
+ser = serial.Serial(cfg.PORT, cfg.BAUDRATE, timeout=10)
+
+ser.flushinput()
 
 # Reset the arduino count if program is running.
 ser.write(b'\xFF')

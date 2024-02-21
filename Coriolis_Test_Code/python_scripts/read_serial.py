@@ -1,7 +1,10 @@
 import serial
+import serial_config as cfg
 
 # Adjust the port and baud rate based on your Arduino setup
-ser = serial.Serial('COM19', 115200, timeout=1)
+ser = serial.Serial(cfg.PORT, cfg.BAUDRATE, timeout=1)
+
+ser.flushInput()
 
 # Reset the arduino count if program is running.
 ser.write(b'\xFF')
@@ -16,6 +19,7 @@ try:
 
 
         while True:
+            ser.write(b'\xF8')
             # Read a line from the serial port
             line = ser.readline().decode('utf-8')
 
