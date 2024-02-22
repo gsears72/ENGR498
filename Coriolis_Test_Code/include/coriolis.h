@@ -27,7 +27,7 @@
 #define SPI_MODE SPI_MODE0
 
 #define sensor1 0x00 // I2C Sensor 1
-#define sensor2 0x01 // I2C Sensor 2
+#define sensor2 0x02 // I2C Sensor 2
 #define sensor3 0x04 // Placeholder if using third I2C Sensor
 
 #define outputmax (double)15099494 // output at maximum pressure [counts]
