@@ -1,0 +1,4 @@
+Test Type	Current Angle	Speed(mph)	Pressure(Pascal)	Variance(+-Pascal)
+Pitch	-25	10.1	-11.2	0.5
+Pitch	-7	10.0	-10.0	0.2
+Pitch	11	10.1	-11.2	0.2

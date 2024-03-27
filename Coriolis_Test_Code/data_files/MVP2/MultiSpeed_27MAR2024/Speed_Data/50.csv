@@ -1,0 +1,7 @@
+Test Type	Current Angle	Speed(mph)	Pressure(Pascal)	Variance(+-Pascal)
+Pitch	-25	50.6	-300.2	0.8
+Pitch	-10	50.1	-292.32	1.2
+Pitch	20	50.1	-296.65	1.3
+Yaw	-20	50.5	-299.7	1.5
+Yaw	10	50.2	-299.8	2.0
+

@@ -2,15 +2,16 @@ import serial
 import serial_config as cfg
 import sys
 import msvcrt
+import os
 
-def collect_data_and_write_file(type, start_angle, end_angle, angle_step, file_prefix):
+def collect_data_and_write_file(speed, type, start_angle, end_angle, angle_step, file_prefix):
     current_angle = start_angle  # Initialize current angle
 
     while current_angle <= end_angle:
         # Prompt to press enter
         last_angle = current_angle - 1
         if current_angle != start_angle:
-            print(f"Press <Enter> to collect {type} {current_angle}°\t<Backspace> to redo {last_angle}°\t <ESC> to exit...")
+            print(f"Press <Enter> to collect {speed}%, {type}, {current_angle}°\t<Backspace> to redo {last_angle}°\t <ESC> to exit...")
         else:
             print(f"Press <Enter> to collect {type} {current_angle}°\t <ESC> to exit...")
         
@@ -22,12 +23,23 @@ def collect_data_and_write_file(type, start_angle, end_angle, angle_step, file_p
             # Send the command to send data open-ended through the serial port
             ser.write(cfg.READ_SERIAL)
 
-            file_path = f"../data_files/MVP2/{file_prefix}/{current_angle}deg.csv"
+            # Define the base directory relative to the script
+            base_directory = os.path.abspath("../../data_files/MVP2/MultiSpeed")
+
+            # Construct the directory path using string formatting
+            directory_path = os.path.join(base_directory, file_prefix)
+
+            # Check if the directory exists
+            if not os.path.exists(directory_path):
+                # Create the directory
+                os.makedirs(directory_path)
+            
+            file_path = f"../../data_files/MVP2/MultiSpeed/{file_prefix}/{current_angle}deg.csv"
 
             with open(file_path, 'w') as file:
                 file.write("Reading_Count,Pitch,Yaw,Pitotstatic\n")
 
-                for _ in range(3):
+                for _ in range(200):
                     # Read a line from the serial port
                     ser.flushInput()
                     ser.write(cfg.GET_DATA)
@@ -57,92 +69,44 @@ def collect_data_and_write_file(type, start_angle, end_angle, angle_step, file_p
 # Adjust the port and baud rate based on your Arduino setup
 ser = serial.Serial(cfg.PORT, cfg.BAUDRATE, timeout=1)
 
+types_of_test = ["Pitch","Yaw","Diagonal"]
+
 try:
-    print("Slow Speed Pitch Test:\nMove probe to pitch=-25°, yaw=0°\nSet tunnel speed to 20%\nPress <Enter> to start test\tPress <ESC> to exit")
-    key = msvcrt.getch()
-    if key == b'\r':  # If user presses Enter
-        collect_data_and_write_file(type="pitch", start_angle=-25, end_angle=-23, angle_step=1, file_prefix="Pitch_slow")
+    print("MVP2 MultiSpeed MultiAngle Test Program")
+    start_angle = int(input("Enter start angle for test in °: "))
+    end_angle = int(input("Enter end angle for test in °: "))
+    angle_step = int(input("Enger angle step for test in °: "))
+    initial_speed = int(input("Enter initial speed for test in mph: "))
+    final_speed = int(input("Enter final speed in mph: "))
+    speed_step = int(input("Enter speed step in mph: "))
 
-    elif key == b'\x1b':  # If user presses Escape
-        print("Exiting the program...")
-        sys.exit()
+    for type in types_of_test:
+        for current_speed in range(initial_speed,final_speed+1,speed_step):
+            if current_speed == 20 or current_speed == 70:
+                continue
 
-    else:
-        print("Invalid input. Please press Enter or Backspace.")
+            print("")
+            if type == "Pitch":
+                print(f"{current_speed}mph {type} Test:\nMove probe to pitch={start_angle}°, yaw=0°\nSet tunnel speed to {current_speed}mph\nPress <Enter> to start test\tPress <ESC> to exit")
+            elif type == "Yaw":
+                print(f"{current_speed}mph {type} Test:\nMove probe to pitch=0°, yaw={start_angle}°\nSet tunnel speed to {current_speed}mph\nPress <Enter> to start test\tPress <ESC> to exit")
+            elif type == "Diagonal":
+                print(f"{current_speed}mph {type} Test:\nMove probe to pitch={start_angle}°, yaw={start_angle}°\nSet tunnel speed to {current_speed}mph\nPress <Enter> to start test\tPress <ESC> to exit")
+            else:
+                print("Invalid Test Type")
     
-    print("--------------------------------")
+            key = msvcrt.getch()
+            if key == b'\r':  # If user presses Enter
+                collect_data_and_write_file(speed = current_speed, type = type, start_angle = start_angle, end_angle = end_angle, angle_step = angle_step, file_prefix=f"{type}_{current_speed}mph")
 
-    input("Slow Speed Yaw Test:\nMove probe to pitch=0°, yaw=-25° and press <Enter> to start test")
-    key = msvcrt.getch()
-    if key == b'\r':  # If user presses Enter
-        collect_data_and_write_file(type="yaw", start_angle=-25, end_angle=-23, angle_step=1, file_prefix="Yaw_slow")
+            elif key == b'\x1b':  # If user presses Escape
+                print("Exiting the program...")
+                sys.exit()
 
-    elif key == b'\x1b':  # If user presses Escape
-        print("Exiting the program...")
-        sys.exit()
-
-    else:
-        print("Invalid input. Please press Enter or Backspace.")
+            else:
+                print("Invalid input. Please press Enter or Backspace.")
     
-    print("--------------------------------")
-
-    input("Slow Speed Diagonal Test:\nMove probe to pitch=-25°, yaw=-25° and press <Enter> to start test")
-    key = msvcrt.getch()
-    if key == b'\r':  # If user presses Enter
-        collect_data_and_write_file(type="diagonal", start_angle=-25, end_angle=23, angle_step=1, file_prefix="Diagonal_slow")
-
-    elif key == b'\x1b':  # If user presses Escape
-        print("Exiting the program...")
-        sys.exit()
-
-    else:
-        print("Invalid input. Please press Enter or Backspace.")
-    
-    print("--------------------------------")
-
-    input("Fast Speed Pitch Test:\nMove probe to pitch=-25°, yaw=0° and press <Enter> to start test")
-    key = msvcrt.getch()
-    if key == b'\r':  # If user presses Enter
-        collect_data_and_write_file(type="pitch", start_angle=-25, end_angle=23, angle_step=1, file_prefix="Pitch_fast")
-
-    elif key == b'\x1b':  # If user presses Escape
-        print("Exiting the program...")
-        sys.exit()
-
-    else:
-        print("Invalid input. Please press Enter or Backspace.")
-    
-    print("--------------------------------")
-
-    input("Fast Speed Yaw Test:\nMove probe to pitch=0°, yaw=-25° and press <Enter> to start test")
-    key = msvcrt.getch()
-    if key == b'\r':  # If user presses Enter
-        collect_data_and_write_file(type="yaw", start_angle=-25, end_angle=25, angle_step=1, file_prefix="Yaw_fast")
-
-    elif key == b'\x1b':  # If user presses Escape
-        print("Exiting the program...")
-        sys.exit()
-
-    else:
-        print("Invalid input. Please press Enter or Backspace.")
-    
-    print("--------------------------------")
-
-    input("Fast Speed Diagonal Test:\nMove probe to pitch=-25°, yaw=-25° and press <Enter> to start test")
-    key = msvcrt.getch()
-    if key == b'\r':  # If user presses Enter
-        collect_data_and_write_file(type="diagonal", start_angle=-25, end_angle=23, angle_step=1, file_prefix="Diagonal_fast")
-
-    elif key == b'\x1b':  # If user presses Escape
-        print("Exiting the program...")
-        sys.exit()
-
-    else:
-        print("Invalid input. Please press Enter or Backspace.")
-    
-    print("--------------------------------")
-    
-    print("Finished data gather.")
+        print("--------------------------------")
 
 finally:
     ser.write(b'\x00')

@@ -13,7 +13,7 @@ ser.write(b'\xFF')
 ser.write(b'\xFA')
 
 try:
-    with open('../data_files/test.csv', 'w') as file:
+    with open('../../data_files/test.csv', 'w') as file:
         file.write("Status Register, 24 - bit Sensor data, Digital Pressure Counts, Percentage of full scale pressure, Pressure Output, Temperature\n")
 
         while True:

@@ -12,12 +12,12 @@ ser.flushInput()
 # Reset the arduino count if program is running.
 ser.write(b'\xFF')
 
-# Semd the command to send data openended through the serial port
+# Send the command to send data openended through the serial port
 ser.write(b'\xAA')
 
 
 try:
-    with open('../data_files/read_serial.csv', 'w') as file:
+    with open('../../data_files/read_serial.csv', 'w') as file:
         file.write("Reading_Count,Pitch,Yaw,Pitotstatic\n")
 
 
@@ -25,7 +25,7 @@ try:
 
             # Wait for user input for 1 second
             start_time = time.time()
-            while (time.time() - start_time) < 1:
+            while (time.time() - start_time) < 0.01:
                 if msvcrt.kbhit():
                     key = msvcrt.getch()
                     if key == b'\r':  # If user presses Enter
