@@ -7,7 +7,7 @@ ser = serial.Serial(cfg.PORT, cfg.BAUDRATE, timeout=1)
 try:
     input("Single Angle Test:\npress <Enter> to start collecting")
 
-    pitch_deg = 25
+    pitch_deg = 0
 
     print(f"Pitch: {pitch_deg}°")
 
@@ -19,7 +19,7 @@ try:
     # Semd the command to send data openended through the serial port
     ser.write(cfg.READ_SERIAL)
 
-    file_path = f"../data_files/MVP2/Yaw_slow/{pitch_deg}deg.csv"
+    file_path = f"../../data_files/MVP2/stationary.csv"
 
     with open(file_path, 'w') as file:
         file.write("Reading_Count,Pitch,Yaw,Pitotstatic\n")

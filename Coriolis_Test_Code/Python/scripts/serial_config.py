@@ -1,7 +1,7 @@
 # serial_config.py
 
 # Define the serial port variable
-PORT = "COM5"  # Example port, replace it with your actual port
+PORT = "COM19"  # Example port, replace it with your actual port
 BAUDRATE = 115200
 
 RESET_SIGNAL = b'\xFF'

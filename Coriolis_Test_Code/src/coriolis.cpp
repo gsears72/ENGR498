@@ -179,7 +179,7 @@ void getdata_with_print() {
 
   // I2C communication information
   uint8_t id = 0x28; // i2c address
-  uint8_t i2cdata[7]; // holds output data
+  uint8_t i2cdata1[7], i2cdata2[7]; // holds output data
   uint8_t i2ccmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
 
   // Set the I2C mux to the first I2C bus
@@ -223,11 +223,11 @@ void getdata_with_print() {
   Wire.requestFrom(id, 7); // read back Sensor data 7 bytes
   int i = 0;
   for (i = 0; i < 7; i++) {
-    i2cdata [i] = Wire.read();
+    i2cdata1 [i] = Wire.read();
   }
 
   // Calculate I2C sensor 1 pressure value and print to buffer
-  press_counts = i2cdata[3] + i2cdata[2] * 256 + i2cdata[1] * 65536; // calculate digital pressure counts
+  press_counts = i2cdata1[3] + i2cdata1[2] * 256 + i2cdata1[1] * 65536; // calculate digital pressure counts
   pressure = ((press_counts - outputmin) * (pmax2H2O - pmin2H2O)) / (outputmax - outputmin) + pmin2H2O;
   sprintf(pBuff, ",%.5f", pressure);
   strcat(printBuffer, pBuff);
@@ -240,11 +240,11 @@ void getdata_with_print() {
 
   Wire.requestFrom(id, 7); // read back Sensor data 7 bytes
   for (int i = 0; i < 7; i++) {
-    i2cdata [i] = Wire.read();
+    i2cdata2 [i] = Wire.read();
   }
 
   // Calculate I2C sensor 2 pressure value and print to buffer
-  press_counts = i2cdata[3] + i2cdata[2] * 256 + i2cdata[1] * 65536; // calculate digital pressure counts
+  press_counts = i2cdata2[3] + i2cdata2[2] * 256 + i2cdata2[1] * 65536; // calculate digital pressure counts
   pressure = ((press_counts - outputmin) * (pmax2H2O - pmin2H2O)) / (outputmax - outputmin) + pmin2H2O;
   sprintf(pBuff, ",%.5f", pressure);
   strcat(printBuffer, pBuff);
@@ -262,80 +262,5 @@ void getdata_with_print() {
   pressure = ((press_counts - outputmin) * (pmax5H2O - pmin5H2O)) / (outputmax - outputmin) + pmin5H2O;
   sprintf(pBuff, ",%.5f", pressure);
   strcat(printBuffer, pBuff);
-
-}
-
-void getdata() {
-  // SPI communication information
-  uint8_t spidata[7] = {0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
-  uint8_t spicmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
-
-  // I2C communication information
-  uint8_t id = 0x28; // i2c address
-  uint8_t i2cdata[7]; // holds output data
-  uint8_t i2ccmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
-
-  // Set the I2C mux to the first I2C bus
-  Wire.beginTransmission(0x70);
-  Wire.write(1 << sensor1);
-  Wire.endTransmission();
-
-  // Send command to first I2C sensor to update data
-  Wire.beginTransmission(id);
-  int stat = Wire.write (i2ccmd, 3); // write command to the sensor
-  stat |= Wire.endTransmission(); // end transmission and check for error
-
-  // Set the I2C mux to the second I2C bus
-  Wire.beginTransmission(0x70);
-  Wire.write(1 << sensor2);
-  Wire.endTransmission();
-
-  // Send command to second I2C sensor to update data
-  Wire.beginTransmission(id);
-  stat = Wire.write (i2ccmd, 3); // write command to the sensor
-  stat |= Wire.endTransmission(); // end transmission and check for error
-
-  // Tell SPI sensor to update data
-  SPI.beginTransaction(mySPISettings);
-  digitalWrite(SS, LOW);
-  SPI.transfer(spicmd, 3);
-  digitalWrite(SS, HIGH);
-  SPI.endTransaction();
-
-
-
-  delay(5); // Delay long enough for all sensors to update
-
-
-
-  // Set the I2C mux to the first I2C bus
-  Wire.beginTransmission(0x70);
-  Wire.write(1 << sensor1);
-  Wire.endTransmission();
-
-  Wire.requestFrom(id, 7); // read back Sensor data 7 bytes
-  for (int i = 0; i < 7; i++) {
-    i2cdata [i] = Wire.read();
-  }
-  
-
-  // Set the I2C mux to the second I2C bus
-  Wire.beginTransmission(0x70);
-  Wire.write(1 << sensor2);
-  Wire.endTransmission();
-
-  Wire.requestFrom(id, 7); // read back Sensor data 7 bytes
-  int i = 0;
-  for (i = 0; i < 7; i++) {
-    i2cdata [i] = Wire.read();
-  }
-
-
-  // Retrieve SPI sensor data
-  SPI.beginTransaction(mySPISettings);
-  digitalWrite(SS, LOW);
-  SPI.transfer(spidata, 7);
-  digitalWrite(SS, HIGH);
-  SPI.endTransaction();
 
 }
