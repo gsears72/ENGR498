@@ -58,6 +58,8 @@ void setup() {
 
 double loopcount = 0;
 void loop() {
+char printBuffer[200];
+
   Serial.println("Program Start");
   while(!Serial){delay(1);}
   delay(5);

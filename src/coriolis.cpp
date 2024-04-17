@@ -41,6 +41,7 @@ void readspi(bool printres, bool debug, int sensorNum) {
   uint8_t data[7] = {0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // holds output data
   uint8_t cmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
 
+  SPISettings mySPISettings(800000, MSBFIRST, SPI_MODE0);
   SPI.beginTransaction(mySPISettings);
   digitalWrite(SS, LOW); // set SS Low
   SPI.transfer(cmd, 3);
@@ -62,6 +63,15 @@ void readspi(bool printres, bool debug, int sensorNum) {
 }
 
 void printdata(uint8_t* data, bool debug) {
+  double press_counts = 0; // digital pressure reading [counts]
+  double temp_counts = 0; // digital temperature reading [counts]
+  double pressure = 0; // pressure reading [bar, psi, kPa, etc.]
+  double temperature = 0; // temperature reading in deg C
+  double percentage = 0; // holds percentage of full scale data
+  char cBuff[20], percBuff[20], pBuff[20], tBuff[20], printBuffer[200];
+
+
+  
   press_counts = data[3] + data[2] * 256 + data[1] * 65536; // calculate digital pressure counts
   temp_counts = data[6] + data[5] * 256 + data[4] * 65536; // calculate digital temperature counts
   temperature = (temp_counts * 200 / 16777215) - 50; // calculate temperature in deg c
@@ -87,6 +97,13 @@ void printdata(uint8_t* data, bool debug) {
 Cvector output;
 
 void dataformate(uint8_t* data, bool debug,int sensorNum) {
+  double press_counts = 0; // digital pressure reading [counts]
+  double temp_counts = 0; // digital temperature reading [counts]
+  double pressure = 0; // pressure reading [bar, psi, kPa, etc.]
+  double temperature = 0; // temperature reading in deg C
+  double percentage = 0; // holds percentage of full scale data
+  char cBuff[20], percBuff[20], pBuff[20], tBuff[20], printBuffer[200];  
+
   press_counts = data[3] + data[2] * 256 + data[1] * 65536; // calculate digital pressure counts
   temp_counts = data[6] + data[5] * 256 + data[4] * 65536; // calculate digital temperature counts
   temperature = (temp_counts * 200 / 16777215) - 50; // calculate temperature in deg c
@@ -138,6 +155,8 @@ std::tuple<double,double,double> startup_calibration_senor_reading(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void commstest() {
+  char printBuffer[200];
+
   for (int i = 0; i < 10; i++) {
     sprintf(printBuffer, "%d", i);
     Serial.print(printBuffer);
@@ -170,6 +189,8 @@ void speedtest() {
   }
 
   averageTime = totalTime / 100.0;
+
+  char printBuffer[200];
 
   sprintf(printBuffer, "Average I2C communication time: %lu ms", averageTime);
   Serial.println(printBuffer);
@@ -224,6 +245,7 @@ void getdata_with_print() {
   stat |= Wire.endTransmission(); // end transmission and check for error
 
   // Tell SPI sensor to update data
+  SPISettings mySPISettings(800000, MSBFIRST, SPI_MODE0);
   SPI.beginTransaction(mySPISettings);
   digitalWrite(SS, LOW);
   SPI.transfer(spicmd, 3);
@@ -246,6 +268,10 @@ void getdata_with_print() {
   for (i = 0; i < 7; i++) {
     i2cdata [i] = Wire.read();
   }
+  double press_counts;
+  double pressure;
+  char pBuff[20],printBuffer[200];
+
 
   // Calculate I2C sensor 1 pressure value and print to buffer
   press_counts = i2cdata[3] + i2cdata[2] * 256 + i2cdata[1] * 65536; // calculate digital pressure counts
@@ -317,6 +343,8 @@ void getdata() {
   stat |= Wire.endTransmission(); // end transmission and check for error
 
   // Tell SPI sensor to update data
+  SPISettings mySPISettings(800000, MSBFIRST, SPI_MODE0);
+
   SPI.beginTransaction(mySPISettings);
   digitalWrite(SS, LOW);
   SPI.transfer(spicmd, 3);
