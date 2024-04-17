@@ -1,6 +1,7 @@
 #include "coriolis.h"
 #include "vectormath.h"
 #include <tuple>
+#include <fstream>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// GENERAL DATA COLLECTION AND PRINTING FUNCTIONS //////////////////////////////////
@@ -97,13 +98,6 @@ void dataformate(uint8_t* data, bool debug,int sensorNum) {
   dtostrf(pressure, 4, 3, pBuff);
   dtostrf(temperature, 4, 3, tBuff);
   
-  if (debug) {
-    sprintf(printBuffer, "%x\t%2x\t%2x\t%2x\t%s\t%s\t%s\t%s\n", data[0], data[1], data[2], data[3], cBuff, percBuff, pBuff, tBuff);
-  }
-  else {
-    sprintf(printBuffer, ",%s", pBuff);
-  }
-  
   if (sensorNum == 0){
     output.set_y1(pressure);
   }
@@ -113,7 +107,17 @@ void dataformate(uint8_t* data, bool debug,int sensorNum) {
   else if(sensorNum == 2){
     output.set_y3(pressure);
   }
-  
+
+  if (debug) {
+    sprintf(printBuffer, "%x\t%2x\t%2x\t%2x\t%s\t%s\t%s\t%s\n", data[0], data[1], data[2], data[3], cBuff, percBuff, pBuff, tBuff);
+    std::ofstream file;
+    file.open("vector.csv", std::ios::app);
+    file << output.get_y1() << "," << output.get_y2() << "," << output.get_y3() << std::endl;
+    file.close();
+  }
+  else {
+    sprintf(printBuffer, ",%s", pBuff);
+  }
 }
 
 

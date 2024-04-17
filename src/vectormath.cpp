@@ -2,9 +2,9 @@
 
 Cvector Cvector::calcvector(){
     Cvector temp;
-    lefte square =
-    correct y1 = lefe square thing
-    C_beta = y3/corrected y1
+    // lefte square =
+    // correct y1 = lefe square thing
+    // C_beta = y3/corrected y1
     fishy = alpha_fishy * (y2/y1);
     beta = alpha_beta * (y3/1);
     V = sqrt((2*y1)/q);

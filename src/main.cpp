@@ -18,7 +18,7 @@ void setup() {
   #ifdef DEBUG
   bool debug = 1;
   #else
-  bool debug = 0;
+  // bool debug = 0;
   #endif
   
   pinMode(SS, OUTPUT);
@@ -41,19 +41,19 @@ void setup() {
   Wire.write(1 << 0);
   Wire.endTransmission();
 
-  bool stored_calibration_value = calibration_pull();
+  // bool stored_calibration_value = calibration_pull();
 
-  if (calibration == false) {
-    Serial.println("Calibrating");
-    const double calibration_value_1, calibration_value_2, calibration_value_3 = startup_calibration_senor_reading();
-    startup_calibrate(calibration_value_1, calibration_value_2, calibration_value_3);
-    calibration_push(true);
+  // if (calibration == false) {
+  //   Serial.println("Calibrating");
+  //   const double calibration_value_1, calibration_value_2, calibration_value_3 = startup_calibration_senor_reading();
+  //   startup_calibrate(calibration_value_1, calibration_value_2, calibration_value_3);
+  //   calibration_push(true);
     
-  }
-  else {
-    Serial.println("Reloading Calibration Data");
-    const double calibration_value_1, calibration_value_2, calibration_value_3 = startup_calibrate_pull();
-  }
+  // }
+  // else {
+  //   Serial.println("Reloading Calibration Data");
+  //   const double calibration_value_1, calibration_value_2, calibration_value_3 = startup_calibrate_pull();
+  // }
 }
 
 double loopcount = 0;
@@ -64,9 +64,9 @@ void loop() {
   if (debug) {
     while(1) {
       Serial.print("I2C1:\t");
-      readwire(sensor1, true, debug,  0);
+      readwire(sensor1, true, true, 0);
       Serial.print("I2C2:\t");
-      readwire(sensor2, true, debug,1);
+      readwire(sensor2, true, true, 1);
       Serial.print("SPI:\t");
       readspi(true, 2);
       delay(1);
@@ -76,11 +76,11 @@ void loop() {
     while (1) {
       sprintf(printBuffer, "%f", loopcount);
       Serial.print(printBuffer);
-      readwire(sensor1, true, debug);
-      readwire(sensor2, true, debug);
+      readwire(sensor1, false, debug, 0);
+      readwire(sensor2, false, debug, 1);
       readspi(true, debug);
       Serial.println();
-      delay(1);
+      // delay(1);
       loopcount++;
     }
   }
