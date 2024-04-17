@@ -133,6 +133,7 @@ void dataformate(uint8_t* data, bool debug,int sensorNum) {
     file.close();
   }
   else {
+    // Where data would be passed to mavlink
     sprintf(printBuffer, ",%s", pBuff);
   }
 }
