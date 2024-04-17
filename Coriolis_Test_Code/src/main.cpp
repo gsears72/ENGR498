@@ -16,6 +16,7 @@
 bool debug = false;
 
 void setup() {
+  
   Serial.begin(115200);
   
   pinMode(SS, OUTPUT);
@@ -71,14 +72,13 @@ void loop() {
         serialRead = 0;
       }
       else if (incomingByte == GET_DATA) {
-        delay(1);
         sprintf(printBuffer, "%.0f", loopcount);
         Serial.print(printBuffer);
         readwire(sensor1, true, debug);
         readwire(sensor2, true, debug);
         readspi(true, debug);
         //getdata_with_print();
-        //Serial.println();
+        Serial.println();
         loopcount++;
       }
     }

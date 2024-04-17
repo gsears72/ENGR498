@@ -4,12 +4,16 @@ import sys
 import msvcrt
 import os
 
+CONF = "Board1_ProbeB" 
+DATE = "16APR2024"
+
 def collect_data_and_write_file(speed, type, start_angle, end_angle, angle_step, file_prefix):
     current_angle = start_angle  # Initialize current angle
 
     while current_angle <= end_angle:
         # Prompt to press enter
-        last_angle = current_angle - 1
+        last_angle = current_angle - angle_step
+        
         if current_angle != start_angle:
             print(f"Press <Enter> to collect {speed}%, {type}, {current_angle}°\t<Backspace> to redo {last_angle}°\t <ESC> to exit...")
         else:
@@ -24,7 +28,7 @@ def collect_data_and_write_file(speed, type, start_angle, end_angle, angle_step,
             ser.write(cfg.READ_SERIAL)
 
             # Define the base directory relative to the script
-            base_directory = os.path.abspath("../../data_files/MVP2/MultiSpeed")
+            base_directory = os.path.abspath(f"../../data_files/{CONF}_{DATE}")
 
             # Construct the directory path using string formatting
             directory_path = os.path.join(base_directory, file_prefix)
@@ -34,7 +38,7 @@ def collect_data_and_write_file(speed, type, start_angle, end_angle, angle_step,
                 # Create the directory
                 os.makedirs(directory_path)
             
-            file_path = f"../../data_files/MVP2/MultiSpeed/{file_prefix}/{current_angle}deg.csv"
+            file_path = f"../../data_files/{CONF}_{DATE}/{file_prefix}/{current_angle}deg.csv"
 
             with open(file_path, 'w') as file:
                 file.write("Reading_Count,Pitch,Yaw,Pitotstatic\n")
@@ -64,12 +68,10 @@ def collect_data_and_write_file(speed, type, start_angle, end_angle, angle_step,
             print("Invalid input. Please press Enter or Backspace.")
 
 
-
-
 # Adjust the port and baud rate based on your Arduino setup
 ser = serial.Serial(cfg.PORT, cfg.BAUDRATE, timeout=1)
 
-types_of_test = ["Pitch","Yaw","Diagonal"]
+types_of_test = ["Yaw","Diagonal", "Static"]#["Pitch","Yaw","Diagonal", "Static"]
 
 try:
     print("MVP2 MultiSpeed MultiAngle Test Program")
@@ -80,11 +82,21 @@ try:
     final_speed = int(input("Enter final speed in mph: "))
     speed_step = int(input("Enter speed step in mph: "))
 
+    """
+    print("\nStatic Test:\nEnsure tunnel speed set to 0mph\nPress <Enter> to gather static data\tPress <ESC> to exit")
+    key = msvcrt.getch()
+    if key == b'\r':  # If user presses Enter
+        collect_data_and_write_file(speed = 0, type = "Static", start_angle = 0, end_angle = 0, angle_step = angle_step, file_prefix=f"0mph")
+    elif key == b'\x1b':  # If user presses Escape
+        print("Exiting the program...")
+        sys.exit()
+
+    else:
+        print("Invalid input. Please press Enter or Backspace.")
+    """
+
     for type in types_of_test:
         for current_speed in range(initial_speed,final_speed+1,speed_step):
-            if current_speed == 20 or current_speed == 70:
-                continue
-
             print("")
             if type == "Pitch":
                 print(f"{current_speed}mph {type} Test:\nMove probe to pitch={start_angle}°, yaw=0°\nSet tunnel speed to {current_speed}mph\nPress <Enter> to start test\tPress <ESC> to exit")
