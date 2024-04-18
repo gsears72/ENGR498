@@ -82,7 +82,7 @@ try:
     final_speed = int(input("Enter final speed in mph: "))
     speed_step = int(input("Enter speed step in mph: "))
 
-    """
+    
     print("\nStatic Test:\nEnsure tunnel speed set to 0mph\nPress <Enter> to gather static data\tPress <ESC> to exit")
     key = msvcrt.getch()
     if key == b'\r':  # If user presses Enter
@@ -92,8 +92,8 @@ try:
         sys.exit()
 
     else:
-        print("Invalid input. Please press Enter or Backspace.")
-    """
+        print("Invalid input. Please press <Enter> or <Escape>.")
+    
 
     for type in types_of_test:
         for current_speed in range(initial_speed,final_speed+1,speed_step):
@@ -116,7 +116,7 @@ try:
                 sys.exit()
 
             else:
-                print("Invalid input. Please press Enter or Backspace.")
+                print("Invalid input. Please press Enter or Backspace or Escape.")
     
         print("--------------------------------")
 
