@@ -1,0 +1,4 @@
+Machine Readings for fast speed gather:
+Rating: %
+Speed:  m/s      mph
+Reference Pressure:  +-  Pa
