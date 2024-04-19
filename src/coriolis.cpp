@@ -10,31 +10,20 @@
 
 void readwire(uint8_t sensor, bool printres, bool debug, int sensorNum) {
 
-  Serial.println("rw 1");
-
   // Set the I2C mux to the correct bus
   Wire.beginTransmission(0x70);
   Wire.write(1 << sensor);
   Wire.endTransmission();
-
-  Serial.println("rw 2");
 
   // Create values to use in communication
   uint8_t id = 0x28; // i2c address
   uint8_t data[7]; // holds output data
   uint8_t cmd[3] = {0xAA, 0x00, 0x00}; // command to be sent
 
-  Serial.println("rw 3");
-
   //double press_counts = 0; // digital pressure reading [counts]
-
   Wire.beginTransmission(id);
-  Serial.println("rw 3.1");
   int stat = Wire.write (cmd, 3); // write command to the sensor
-  Serial.println("rw 3.2");
   stat |= Wire.endTransmission(); // end transmission and check for error
-
-  Serial.println("rw 4");
 
   delay(5);
 
@@ -43,8 +32,6 @@ void readwire(uint8_t sensor, bool printres, bool debug, int sensorNum) {
   for (i = 0; i < 7; i++) {
     data [i] = Wire.read();
   }
-
-  Serial.println("rw 5");
 
   if (printres) printdata(data, debug);
   else dataformate(data,debug,sensorNum);
@@ -129,19 +116,16 @@ void dataformate(uint8_t* data, bool debug,int sensorNum) {
     sprintf(printBuffer, "sensor1 pressure: %f",pressure);
     Serial.println(printBuffer);
     output.set_y1(pressure);
-    Serial.println("bp1");
   }
   else if(sensorNum == 1){
     sprintf(printBuffer, "sensor2 pressure: %f",pressure);
     Serial.println(printBuffer);
     output.set_y2(pressure);
-    Serial.println("bp2");
   }
   else if(sensorNum == 2){
     sprintf(printBuffer, "sensor3 pressure: %f",pressure);
     Serial.println(printBuffer);
     output.set_y3(pressure);
-    Serial.println("bp1");
     
   }
 }
@@ -151,9 +135,6 @@ void vector_output(){
   temp = output.calcvector(output);
   temp.printVector(temp);
 }
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// COMMUNICATIONS TESTS FUNCTIONS ////////////////////////////////////////////
