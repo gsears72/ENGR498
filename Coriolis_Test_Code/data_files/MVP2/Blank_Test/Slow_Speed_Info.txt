@@ -1,4 +1,0 @@
-Machine Readings for slow speed gather:
-Rating: %
-Speed:  m/s      mph
-Reference Pressure:  +-  Pa
