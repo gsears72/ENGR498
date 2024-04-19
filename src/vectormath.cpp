@@ -7,6 +7,8 @@ Cvector Cvector::calcvector(Cvector calc){
     // lefte square =
     // correct y1 = lefe square thing
     // C_beta = y3/corrected y1
+
+    
     Serial.println();
     Serial.print("alpha_fishy: ");
     Serial.println(calc.alpha_fishy);
