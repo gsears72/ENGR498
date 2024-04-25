@@ -18,13 +18,14 @@ Cvector Cvector::calcvector(Cvector calc){
     double s2 = calc.V_0*calc.temp_Cb;
     calc.S ={s1,s2};
 
-    //NEED TO FIGURE OUT HOW TO DO LEAST SQUARES FIT AND VECTOR MULTIPLICATION
-    double p_part1 = dotProduct(calc.S,calc.S);
-    double p_part2 = scalarMultiplication(calc.S,calc.y);
-    calc.p = // least squares fit;
+    //NEED TO FIGURE OUT HOW TO DO LEAST SQUARES FIT
+    std::vector<double >p_part1 = vectorMultiplication(calc.S,calc.S);
+    std::vector<double> p_part2 = scalarMultiplication(calc.S,calc.y);
+     // least squares fit
+    leastSquares(p_part1,p_part2,calc.slope,calc.intercept);
 
-    calc.gamma_a = calc.p[0];
-    calc.gamma_b = calc.p[1];
+    calc.gamma_a = calc.slope;
+    calc.gamma_b = calc.intercept;
 
     calc.V = calc.V_0*(1 +(calc.gamma_a*calc.temp_Ca) + (calc.gamma_b*calc. temp_Cb));
 
@@ -53,7 +54,7 @@ Cvector Cvector::calcvector(Cvector calc){
     Serial.println(calc.J);
     Serial.println();
 
-    calc.K =(calc.V*cos(calc.beta)*tan(calc.fishy));
+    calc.K =(calc.V*tan(angleRadians));
     Serial.print("K: ");
     Serial.println(calc.K);
     Serial.println();
@@ -177,6 +178,40 @@ std::vector<double> scalarMultiplication(const std::vector<double>& vec, double 
     return result;
 }
 
+// Function to perform least squares regression between a double and a vector of doubles
+void leastSquares(const std::vector<double>& x, const std::vector<double>& y, double& slope, double& intercept) {
+    int n = x.size();
+    double sum_x = 0, sum_y = 0, sum_xy = 0, sum_x_sq = 0;
+
+    // Calculate sums
+    for (int i = 0; i < n; ++i) {
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += x[i] * y[i];
+        sum_x_sq += x[i] * x[i];
+    }
+
+    // Calculate slope (m) and intercept (b)
+    slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x_sq - sum_x * sum_x);
+    intercept = (sum_y - slope * sum_x) / n;
+}
+
+// Function to perform element-wise multiplication of two vectors
+std::vector<double> vectorMultiplication(const std::vector<double>& vec1, const std::vector<double>& vec2) {
+    // Check if vectors are of the same size
+    if (vec1.size() != vec2.size()) {
+        std::cerr << "Error: Vectors must be of the same size for element-wise multiplication" << std::endl;
+        return std::vector<double>();
+    }
+
+    // Perform element-wise multiplication
+    std::vector<double> result;
+    for (size_t i = 0; i < vec1.size(); ++i) {
+        result.push_back(vec1[i] * vec2[i]);
+    }
+
+    return result;
+}
 
 
 

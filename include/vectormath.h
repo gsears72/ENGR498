@@ -40,6 +40,8 @@ class Cvector{
         double Ca = 0.00;
         double Cb = 0.00;
         double angle = 0.00;
+        double slope = 1.0;
+        double intercept = 1.0;
 
         Cvector calcvector(Cvector calc);
 
@@ -66,6 +68,10 @@ class Cvector{
         double dotProduct(const std::vector<double>& vec1, const std::vector<double>& vec2);
 
         std::vector<double> scalarMultiplication(const std::vector<double>& vec, double scalar);
+
+        void leastSquares(const std::vector<double>& x, const std::vector<double>& y, double& slope, double& intercept);
+
+        std::vector<double> vectorMultiplication(const std::vector<double>& vec1, const std::vector<double>& vec2);
 
 };
 
