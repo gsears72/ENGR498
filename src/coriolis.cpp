@@ -84,7 +84,7 @@ void printdata(uint8_t* data, bool debug) {
     sprintf(printBuffer, "%x\t%2x\t%2x\t%2x\t%s\t%s\t%s\t%s\n", data[0], data[1], data[2], data[3], cBuff, percBuff, pBuff, tBuff);
   }
   else {
-    sprintf(printBuffer, ",%s", pBuff);
+    // sprintf(printBuffer, ",%s", pBuff);
   }
   
   Serial.print(printBuffer);
@@ -113,18 +113,12 @@ void dataformate(uint8_t* data, bool debug,int sensorNum) {
   dtostrf(temperature, 4, 3, tBuff);
   
   if (sensorNum == 0){
-    sprintf(printBuffer, "sensor1 pressure: %f",pressure);
-    Serial.println(printBuffer);
     output.set_y1(pressure);
   }
   else if(sensorNum == 1){
-    sprintf(printBuffer, "sensor2 pressure: %f",pressure);
-    Serial.println(printBuffer);
     output.set_y2(pressure);
   }
   else if(sensorNum == 2){
-    sprintf(printBuffer, "sensor3 pressure: %f",pressure);
-    Serial.println(printBuffer);
     output.set_y3(pressure);
     
   }

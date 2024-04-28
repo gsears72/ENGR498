@@ -56,18 +56,15 @@ char printBuffer[200];
     
     while(1) {
       
-      Serial.print("I2C1:\t");
       readwire(sensor1, false, true, 0);
       
-      Serial.print("I2C2:\t");
       readwire(sensor2, false, true, 1);
       
-      Serial.print("SPI:\t");
       readspi(false, true, 2);
 
       vector_output();
       
-      delay(100000);
+      delay(10);
 
     }
   }
