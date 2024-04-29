@@ -78,7 +78,7 @@ void loop() {
         readwire(sensor2, true, debug);
         readspi(true, debug);
         //getdata_with_print();
-        //Serial.println();
+        Serial.println();
         loopcount++;
       }
     }

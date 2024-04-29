@@ -1,0 +1,91 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "C:/Users/TrevorBailey.MSI/Documents/GitHub/ENGR498/include",
+                "C:/Users/TrevorBailey.MSI/Documents/GitHub/ENGR498/src",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Wire",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/SPI",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_ZeroDMA",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_ZeroDMA/utility",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_TinyUSB_Arduino/src",
+                "C:/Users/TrevorBailey.MSI/Documents/GitHub/ENGR498/.pio/libdeps/adafruit_qt_py_m0/FlashStorage_SAMD/src",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-cmsis/CMSIS/Core/Include",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-cmsis-atmel/CMSIS/Device/ATMEL",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/cores/arduino",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_TinyUSB_Arduino/src/arduino",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-cmsis/CMSIS/DSP/Include",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/variants/qtpy_m0",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/CI_Tests",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/HID",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/I2S/src",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/SAMD_AnalogCorrection/src",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/SDU/src",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Servo/src",
+                "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/USBHost/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "C:/Users/TrevorBailey.MSI/Documents/GitHub/ENGR498/include",
+                    "C:/Users/TrevorBailey.MSI/Documents/GitHub/ENGR498/src",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Wire",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/SPI",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_ZeroDMA",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_ZeroDMA/utility",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_TinyUSB_Arduino/src",
+                    "C:/Users/TrevorBailey.MSI/Documents/GitHub/ENGR498/.pio/libdeps/adafruit_qt_py_m0/FlashStorage_SAMD/src",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-cmsis/CMSIS/Core/Include",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-cmsis-atmel/CMSIS/Device/ATMEL",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/cores/arduino",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Adafruit_TinyUSB_Arduino/src/arduino",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-cmsis/CMSIS/DSP/Include",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/variants/qtpy_m0",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/CI_Tests",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/HID",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/I2S/src",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/SAMD_AnalogCorrection/src",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/SDU/src",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/Servo/src",
+                    "C:/Users/TrevorBailey.MSI/.platformio/packages/framework-arduino-samd-adafruit/libraries/USBHost/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60115",
+                "ARDUINO_QTPY_M0",
+                "CRYSTALLESS",
+                "ADAFRUIT_QTPY_M0",
+                "__SAMD21E18A__",
+                "ARM_MATH_CM0PLUS",
+                "ARDUINO=10805",
+                "F_CPU=48000000L",
+                "USBCON",
+                "USB_VID=0x239A",
+                "USB_PID=0x80CB",
+                "USB_PRODUCT=\"QT Py M0\"",
+                "USB_MANUFACTURER=\"Adafruit\"",
+                "ARDUINO_ARCH_SAMD",
+                "USB_CONFIG_POWER=100",
+                "ARDUINO_SAMD_ADAFRUIT",
+                ""
+            ],
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++11",
+            "compilerPath": "C:/Users/TrevorBailey.MSI/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc.exe",
+            "compilerArgs": [
+                "-mcpu=cortex-m0plus",
+                "-mthumb",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
